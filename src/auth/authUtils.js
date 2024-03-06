@@ -14,6 +14,13 @@ const HEADER = {
   REFRESH_TOKEN: "x-rtoken-id",
 };
 
+/**
+ *  create token pair (accessToken and refreshToken) by jwt
+ *
+ * 1. receive payload (data want to bring in jwt), publicKey, privateKey
+ * 2. verify accessToken
+ */
+
 const createTokenPair = async (payload, publicKey, privateKey) => {
   try {
     // accessToken
@@ -77,6 +84,15 @@ const authentication = asyncHandler(async (req, res, next) => {
     throw error;
   }
 });
+
+/**
+ * Authentication v2 (auth để gọi bypass call api)
+ * 1. Auth user, token, key
+ * 2. check userId exist to find in keyStore
+ * 3. check keyStore exist by findByUserId
+ * 4. check refreshToken is right, and use jwt verify to get decodeUser to check decodeUser.userId match userId from header
+ * 5. same with accessToken
+ */
 
 const authenticationV2 = asyncHandler(async (req, res, next) => {
   /**

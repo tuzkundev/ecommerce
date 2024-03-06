@@ -1,11 +1,6 @@
 "use-strict";
 
-const {
-  product,
-  clothing,
-  electronic,
-  furniture,
-} = require("../../models/product.model");
+const { product } = require("../../models/product.model");
 
 const { Types } = require("mongoose");
 const {

@@ -60,4 +60,5 @@ module.exports = {
   BadRequestError,
   AuthFailureError,
   NotFoundError,
+  ForbiddenError,
 };

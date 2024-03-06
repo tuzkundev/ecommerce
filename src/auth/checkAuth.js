@@ -1,6 +1,5 @@
 "use strict";
 
-const { BadRequestError } = require("../core/error.response");
 const { findById } = require("../services/apikey.service");
 // const { findById } = require("../models/apikey.model");
 

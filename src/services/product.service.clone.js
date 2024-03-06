@@ -31,6 +31,11 @@ class ProductFactory {
    * payload: Du lieu cua chung ta goi la payload
    */
 
+  /**
+   * productRegistry to control and store type of product
+   * and could add more new type
+   */
+
   static productRegistry = {
     // key -class
   };
@@ -156,7 +161,7 @@ class Clothing extends Product {
     const newClothing = await clothing.create(this.product_attributes);
     if (!newClothing) throw new BadRequestError("Create new clothing failed");
 
-    const newProduct = await super.createProduct();
+    const newProduct = await super.createProduct(newClothing._id);
     if (!newProduct) throw new BadRequestError("Create new product failed");
 
     return newProduct;

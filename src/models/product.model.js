@@ -16,12 +16,10 @@ var productSchema = new Schema(
       type: String,
       require: true,
     },
-    // trang thai api nay co hoat dong hay khong
     product_thumb: {
       type: String,
       require: true,
     },
-    // co quyen truy cap api nay hay khong
     product_description: String,
     product_slug: String, // quan-jean-cao-cap
 

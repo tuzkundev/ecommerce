@@ -14,7 +14,6 @@ var inventorySchema = new Schema(
     inventory_location: { type: String, default: "unKnow" },
     inventory_stock: { type: Number, require: true }, // hang ton kho
     inventory_shopId: { type: Schema.Types.ObjectId, ref: "Shop" },
-    inventory_shopId: { type: Schema.Types.ObjectId, ref: "Shop" },
     inventory_reservations: { type: Array, default: [] }, // dat truoc
   },
   {

@@ -33,7 +33,7 @@ const removeUndefinedObject = (obj) => {
   const a = {
    c : {
    d : 1,
-  e : 2
+   e : 2
   }
 }
 
