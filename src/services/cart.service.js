@@ -22,6 +22,8 @@ class CartService {
         },
       },
       options = { upsert: true, new: true };
+    // upsert : true =>> if no cart matching, a new cart will be inserted
+    // new : true =>> when upsert true, this options return the modified document if a new docs is created
 
     return await cartModel.findOneAndUpdate(query, updateOrInsert, options);
   }

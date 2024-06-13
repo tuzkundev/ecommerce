@@ -5,7 +5,7 @@ const DOCUMENT_NAME = "Inventory";
 const COLLECTION_NAME = "Inventories";
 
 // Declare the Schema of the Mongo model
-var inventorySchema = new Schema(
+const inventorySchema = new Schema(
   {
     inventory_productId: {
       type: Schema.Types.ObjectId,

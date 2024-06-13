@@ -2,8 +2,8 @@
 
 const express = require("express");
 const productController = require("../../controllers/product.controller");
-const { asyncHandler, apiKey, permission } = require("../../auth/checkAuth");
-const { authentication, authenticationV2 } = require("../../auth/authUtils");
+const { asyncHandler } = require("../../auth/checkAuth");
+const { authenticationV2 } = require("../../auth/authUtils");
 
 const router = express.Router();
 

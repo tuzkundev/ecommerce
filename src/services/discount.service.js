@@ -215,7 +215,6 @@ class DiscountService {
 
     if (!discount_is_active) throw new NotFoundError("Discount expired");
     if (!discount_max_use) throw new NotFoundError("Discount are out");
-    if (!discount_max_use) throw new NotFoundError("Discount are out");
 
     if (
       new Date() < new Date(discount_start_date) ||

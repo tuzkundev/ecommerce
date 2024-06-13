@@ -105,11 +105,11 @@ const queryProduct = async ({ query, limit, skip }) => {
 };
 
 const getProductById = async (productId) => {
-  return await product
-    .findOne({
-      _id: productId,
-    })
-    .lean();
+  return product
+      .findOne({
+        _id: productId,
+      })
+      .lean();
 };
 
 const checkProductByServer = async (products) => {

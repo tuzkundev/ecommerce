@@ -3,6 +3,9 @@
 const { BadRequestError } = require("../core/error.response");
 const { checkProductByServer } = require("../models/repositories/product.repo");
 const { getDiscountAmount } = require("./discount.service");
+const {findCartById} = require("../models/repositories/cart.repo");
+const {acquireLock, releaseLock} = require("./redis.service");
+const { orderSchema } = require("../models/order.model")
 
 class CheckoutService {
   /**
@@ -21,7 +24,7 @@ class CheckoutService {
    *          item_products: [
    *                 {
    *                      price,
-   *                         quantity,
+   *                       quantity,
    *                      productId
    *                  }
    *          ]
@@ -45,18 +48,18 @@ class CheckoutService {
 
     // tinh tong tien bill
     for (let index = 0; index < shop_order_ids.length; index++) {
-      const { shopId, shop_discounts = [], item_products } = shop_order_ids[i];
+      const { shopId, shop_discounts = [], item_products } = shop_order_ids[index];
       // check product available
       const checkProductSever = await checkProductByServer(item_products);
       if (!checkProductSever[0]) throw new BadRequestError("order wrong!!!");
 
       // tong tien don hang
       const checkoutPrice = checkProductSever.reduce((acc, product) => {
-        return acc + product.quantity * product.price;
+        return acc + (product.quantity * product.price);
       }, 0);
 
       // tong tien truoc khi xu ly
-      checkout_order.totalPrice = +checkoutPrice;
+      checkout_order.totalPrice += checkoutPrice;
 
       const itemCheckout = {
         shopId,
@@ -97,6 +100,74 @@ class CheckoutService {
       checkout_order,
     };
   }
+
+  static async orderByUser({shop_order_ids, cartId, userId, user_address = {}, user_payment = {}}) {
+    const { shop_order_ids_new, checkout_order } = await CheckoutService.checkoutReview({
+      cartId,
+      userId,
+      shop_order_ids
+    })
+
+    // check lai lan nua xem vuot ton kho hay khong
+    // get new array Product
+    const products = shop_order_ids_new.flatMap(order => order.item_products)
+    console.log(`[1]::`, products)
+    const acquireProduct = []
+    for (let i = 0; i < products.length; i++) {
+      const { quantity, productId } = products[i]
+      const keyLock = await acquireLock(productId, quantity, cartId)
+
+      // neu trong mang nay co mot gia tri false thi la co 1 san pham update
+      // thong bao nguoi dung chinh sua
+      acquireProduct.push(!!keyLock) // keyLock ? true : false
+
+      if(keyLock) {
+        await  releaseLock(keyLock)
+      }
+    }
+
+    // neu co 1 san pham het hang trong kho
+    if(acquireProduct.includes(false)) {
+      throw new BadRequestError("Mot so san pham da duoc cap nhat, vui long quay lai gio hang")
+    }
+
+    const newOrder = await orderSchema.create({
+      order_userId: userId,
+      order_checkout: checkout_order,
+      order_shipping: user_address,
+      order_payment: user_payment,
+      order_products: shop_order_ids_new,
+    })
+    // neu insert thanh cong thi remove product
+    if(newOrder) {
+      // remove product in my cart
+    }
+
+    return newOrder
+  }
+
+  // 1. Query order [users]
+  static async getOrderByUser() {
+
+  }
+
+  // 2. Query order using id  [users]
+  static async getOneOrderByUser() {
+
+  }
+
+  // 3.Cancel order  [users]
+  static async cancelOrder() {
+
+  }
+
+  // 2. update order [admin]
+  static async updateOrderByAdmin() {
+
+  }
+
 }
 
 module.exports = CheckoutService;
+
+
